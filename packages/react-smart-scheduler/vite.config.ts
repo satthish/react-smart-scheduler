@@ -22,13 +22,13 @@ import { resolve } from 'path';
 //   the dist clean. Bundler consumers pick the leaner ESM build automatically.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const pkg = { version: '0.1.0' };
+const pkg = { version: '0.1.2' };
 
 const BANNER = `/*!
  * react-smart-scheduler v${pkg.version}
  * (c) ${new Date().getFullYear()} react-smart-scheduler contributors
  * Released under the MIT License
- * https://github.com/yourname/react-smart-scheduler
+ * https://github.com/satthish/react-smart-scheduler
  */`;
 
 export default defineConfig({

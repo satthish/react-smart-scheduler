@@ -1,19 +1,19 @@
 {
   "name": "react-smart-scheduler",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A production-ready, open-source React scheduler/calendar component with Day, Week, and Month views — drag-and-drop, resize, and a clean controlled-component API.",
   "author": {
     "name": "react-smart-scheduler contributors",
-    "url": "https://github.com/yourname/react-smart-scheduler"
+    "url": "https://github.com/satthish/react-smart-scheduler"
   },
   "license": "MIT",
-  "homepage": "https://github.com/yourname/react-smart-scheduler#readme",
+  "homepage": "https://github.com/satthish/react-smart-scheduler#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourname/react-smart-scheduler.git"
+    "url": "https://github.com/satthish/react-smart-scheduler.git"
   },
   "bugs": {
-    "url": "https://github.com/yourname/react-smart-scheduler/issues"
+    "url": "https://github.com/satthish/react-smart-scheduler/issues"
   },
   "keywords": [
     "react",

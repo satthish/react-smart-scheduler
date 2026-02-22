@@ -45,11 +45,11 @@ const SEED_EVENTS: CalendarEvent[] = [
 
 // ── Support links ─────────────────────────────────────────────────────────────
 const LINKS = {
-  github:     'https://github.com/yourname/react-smart-scheduler',
+  github:     'https://github.com/satthish/react-smart-scheduler',
   bmc:        'https://buymeacoffee.com/sathish.hazhtech',
   sponsors:   'https://github.com/sponsors/satthish',
   npm:        'https://www.npmjs.com/package/react-smart-scheduler',
-  issues:     'https://github.com/yourname/react-smart-scheduler/issues',
+  issues:     'https://github.com/satthish/react-smart-scheduler/issues',
 };
 
 // ── Full-width donate top bar ─────────────────────────────────────────────────

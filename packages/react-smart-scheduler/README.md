@@ -13,10 +13,23 @@ Day · Week · Month views · Drag & drop · Resize · TypeScript · Zero UI fra
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org/)
 
 [**Live Demo →**](https://scheduler.hazhtech.com/) &nbsp;|&nbsp;
-[**GitHub →**](https://github.com/yourname/react-smart-scheduler) &nbsp;|&nbsp;
+[**GitHub →**](https://github.com/satthish/react-smart-scheduler) &nbsp;|&nbsp;
 [**npm →**](https://www.npmjs.com/package/react-smart-scheduler)
 
 </div>
+
+---
+
+## ❤️ Support the project
+
+react-smart-scheduler is **free and open-source (MIT)**. If it saves you development time, please consider supporting it — every contribution keeps the project alive and actively maintained.
+
+| | |
+|---|---|
+| ☕ **[Buy Me a Coffee](https://buymeacoffee.com/sathish.hazhtech)** | One-time tip — any amount helps |
+| 🩷 **[GitHub Sponsors](https://github.com/sponsors/satthish)** | Monthly support with perks |
+
+⭐ [Star the repo](https://github.com/satthish/react-smart-scheduler) · 🐛 [Report a bug](https://github.com/satthish/react-smart-scheduler/issues) · 🔁 Share with a teammate
 
 ---
 
@@ -114,23 +127,158 @@ export default function App() {
 
 ### `CalendarEvent` type
 
+Every event on the calendar is a plain JavaScript object that satisfies this interface:
+
 ```ts
 interface CalendarEvent {
-  id:     string;
-  title:  string;
-  start:  Date;
-  end:    Date;
-  color?: string;  // any valid CSS colour, e.g. '#3b82f6' or 'royalblue'
+  id:     string;   // unique identifier
+  title:  string;   // text shown on the event chip
+  start:  Date;     // inclusive start — must be earlier than end
+  end:    Date;     // exclusive end   — must be later than start
+  color?: string;   // any valid CSS colour (optional, falls back to palette)
 }
 ```
 
-To attach custom metadata, **extend** the interface:
+#### Field reference
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `id` | `string` | ✅ | Must be **unique** across all events. Use `generateId()` for new events or your own UUID/nanoid. |
+| `title` | `string` | ✅ | Displayed on the chip. Long titles are truncated with `…` on short events. |
+| `start` | `Date` | ✅ | JavaScript `Date` object. Must be **strictly before** `end`. Timezone is whatever local time the `Date` represents. |
+| `end` | `Date` | ✅ | JavaScript `Date` object. Must be **strictly after** `start`. Same-day is fine; multi-day is supported in month view. |
+| `color` | `string` | ❌ | Any valid CSS colour string. If omitted, the library picks from `EVENT_COLORS` using `pickColor(id)`. |
+
+#### Constraints & rules
+
+```
+✅  start < end
+✅  Minimum duration: 1 minute (shorter events still render at minimum chip height)
+✅  Multi-day events: supported in Month view; in Day/Week views only the same-day portion is shown
+✅  Overlapping events are automatically laid out side-by-side
+❌  start === end  →  undefined behaviour, avoid
+❌  start > end   →  event will not render
+```
+
+#### Creating events
 
 ```ts
-interface MyEvent extends CalendarEvent {
-  roomId:    string;
-  attendees: string[];
+import { generateId } from 'react-smart-scheduler';
+
+// From a date + hour offsets
+const event: CalendarEvent = {
+  id:    generateId(),
+  title: 'Team standup',
+  start: new Date(2025, 0, 15, 9, 0),   // Jan 15 2025 09:00
+  end:   new Date(2025, 0, 15, 9, 30),  // Jan 15 2025 09:30
+  color: '#3b82f6',
+};
+
+// From ISO strings (common when coming from an API / database)
+const fromApi: CalendarEvent = {
+  id:    apiEvent.id,
+  title: apiEvent.title,
+  start: new Date(apiEvent.startIso),   // new Date('2025-01-15T09:00:00')
+  end:   new Date(apiEvent.endIso),
+  color: apiEvent.color ?? '#8b5cf6',
+};
+
+// All-day style (midnight-to-midnight)
+const allDay: CalendarEvent = {
+  id:    generateId(),
+  title: 'Company holiday',
+  start: new Date(2025, 0, 20, 0, 0, 0),
+  end:   new Date(2025, 0, 20, 23, 59, 59),
+  color: '#10b981',
+};
+```
+
+#### Color reference
+
+`color` accepts any valid CSS colour string:
+
+```ts
+color: '#3b82f6'          // hex (recommended — predictable across browsers)
+color: '#3b82f680'        // hex with alpha (50% transparent)
+color: 'royalblue'        // named colour
+color: 'rgb(59,130,246)'  // rgb()
+color: 'hsl(217,91%,60%)' // hsl()
+```
+
+Built-in palette (used when `color` is omitted):
+
+```ts
+import { EVENT_COLORS, pickColor } from 'react-smart-scheduler';
+
+// EVENT_COLORS — the full string[] palette
+console.log(EVENT_COLORS);
+// ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', ...]
+
+// pickColor(id) — deterministic colour assignment so the same event
+// always gets the same colour, even across re-renders
+const color = pickColor(event.id);  // returns one of EVENT_COLORS
+```
+
+#### Extending with custom fields
+
+To attach your own metadata (room ID, attendees, status, etc.) without losing TypeScript safety, **extend** the interface:
+
+```ts
+// types.ts
+import type { CalendarEvent } from 'react-smart-scheduler';
+
+export interface MyEvent extends CalendarEvent {
+  roomId:      string;
+  attendees:   string[];
+  status:      'confirmed' | 'tentative' | 'cancelled';
+  description: string;
 }
+
+// Your component — cast when passing to Scheduler
+const events: MyEvent[] = [...];
+
+<Scheduler
+  events={events as CalendarEvent[]}  // widening cast — safe, Scheduler only reads base fields
+  onEventAdd={(partial) => {
+    // partial is Omit<CalendarEvent, 'id'> — add your extra fields before saving
+    const newEvent: MyEvent = {
+      ...partial,
+      id:          generateId(),
+      roomId:      selectedRoom,
+      attendees:   [],
+      status:      'confirmed',
+      description: '',
+    };
+    setEvents((prev) => [...prev, newEvent]);
+  }}
+  onEventChange={(updated) =>
+    // updated is CalendarEvent — merge back with your extra fields
+    setEvents((prev) =>
+      prev.map((e) => (e.id === updated.id ? { ...e, ...updated } : e))
+    )
+  }
+  onEventDelete={(id) =>
+    setEvents((prev) => prev.filter((e) => e.id !== id))
+  }
+/>
+```
+
+#### Serialising to / from a database
+
+```ts
+// Saving to DB — convert Date → ISO string
+const toDb = (e: CalendarEvent) => ({
+  ...e,
+  start: e.start.toISOString(),
+  end:   e.end.toISOString(),
+});
+
+// Loading from DB — convert ISO string → Date
+const fromDb = (row: DbRow): CalendarEvent => ({
+  ...row,
+  start: new Date(row.start),
+  end:   new Date(row.end),
+});
 ```
 
 ### Exported utilities
@@ -244,7 +392,7 @@ const useCalendarStore = create<{
 
 ```bash
 # Clone
-git clone https://github.com/yourname/react-smart-scheduler.git
+git clone https://github.com/satthish/react-smart-scheduler.git
 cd react-smart-scheduler/packages/react-smart-scheduler
 
 # Install
@@ -367,19 +515,6 @@ All contributions are welcome — bug fixes, features, docs, tests.
 
 ---
 
-## ❤️ Donate / Support
-
-react-smart-scheduler is **free and open-source (MIT)**. Maintaining it takes real effort. If it saves you time, please consider:
-
-| | |
-|---|---|
-| ☕ **[Buy Me a Coffee](https://buymeacoffee.com/sathish.hazhtech)** | One-time tip — any amount helps |
-| 🩷 **[GitHub Sponsors](https://github.com/sponsors/satthish)** | Monthly support with perks |
-
-Every ⭐ star and share also helps the project grow. Thank you 🙏
-
----
-
 ## 📄 License
 
 [MIT](LICENSE) © react-smart-scheduler contributors
@@ -388,6 +523,6 @@ Every ⭐ star and share also helps the project grow. Thank you 🙏
 
 <div align="center">
 
-Built with ❤️ and TypeScript &nbsp;·&nbsp; If this saves you time, consider [starring ⭐ the repo](https://github.com/yourname/react-smart-scheduler)
+Built with ❤️ and TypeScript &nbsp;·&nbsp; If this saves you time, consider [starring ⭐ the repo](https://github.com/satthish/react-smart-scheduler)
 
 </div>
