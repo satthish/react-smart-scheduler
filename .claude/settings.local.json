@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)",
+      "Bash(kill:*)",
+      "Bash(/Users/apple/Sites/react-smart-scheduler/packages/react-smart-scheduler/src/index.ts:*)",
+      "Bash(/Users/apple/Sites/react-smart-scheduler/packages/react-smart-scheduler/README.md:*)",
+      "Bash(/Users/apple/Sites/react-smart-scheduler/.gitignore:*)",
+      "Bash(npm run prepublishOnly:*)",
+      "Bash(/Users/apple/Sites/react-smart-scheduler/packages/react-smart-scheduler/vite.demo.config.ts:*)",
+      "Bash(npm run build:demo:*)",
+      "Bash(zip:*)",
+      "Bash(unzip:*)",
+      "Bash(open:*)"
+    ]
+  }
+}

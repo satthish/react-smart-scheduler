@@ -1,0 +1,626 @@
+/* ============================================================
+   react-smart-scheduler — core styles
+   All class names are prefixed with "rss-" to avoid collisions.
+   Theming is done via CSS custom properties on .rss-root.
+   ============================================================ */
+
+/* ── Design tokens ─────────────────────────────────────────── */
+.rss-root {
+  --rss-primary:        #3b82f6;
+  --rss-primary-light:  #eff6ff;
+  --rss-border:         #e5e7eb;
+  --rss-border-light:   #f3f4f6;
+  --rss-text:           #111827;
+  --rss-text-sm:        #374151;
+  --rss-text-muted:     #9ca3af;
+  --rss-bg:             #ffffff;
+  --rss-bg-alt:         #f9fafb;
+  --rss-today-bg:       #eff6ff;
+  --rss-time-gutter-w:  52px;
+  --rss-header-h:       56px;
+  --rss-radius:         6px;
+  --rss-shadow:         0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --rss-event-radius:   4px;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--rss-text);
+  background: var(--rss-bg);
+  border: 1px solid var(--rss-border);
+  border-radius: var(--rss-radius);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 500px;
+  /* Prevent text selection while dragging */
+  user-select: none;
+  -webkit-user-select: none;
+  box-sizing: border-box;
+}
+
+.rss-root *, .rss-root *::before, .rss-root *::after {
+  box-sizing: border-box;
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+.rss-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  height: var(--rss-header-h);
+  border-bottom: 1px solid var(--rss-border);
+  background: var(--rss-bg);
+  flex-shrink: 0;
+}
+
+.rss-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rss-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border: 1px solid var(--rss-border);
+  border-radius: var(--rss-radius);
+  background: var(--rss-bg);
+  color: var(--rss-text-sm);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.rss-btn:hover {
+  background: var(--rss-bg-alt);
+  border-color: #d1d5db;
+}
+
+.rss-btn:active {
+  background: #f3f4f6;
+}
+
+.rss-btn--icon {
+  padding: 5px 8px;
+  font-size: 16px;
+}
+
+.rss-btn--primary {
+  background: var(--rss-primary);
+  border-color: var(--rss-primary);
+  color: #fff;
+}
+
+.rss-btn--primary:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.rss-btn--danger {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+.rss-btn--danger:hover {
+  background: #fecaca;
+}
+
+.rss-header-title {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--rss-text);
+  text-align: center;
+}
+
+.rss-view-switcher {
+  display: flex;
+  border: 1px solid var(--rss-border);
+  border-radius: var(--rss-radius);
+  overflow: hidden;
+}
+
+.rss-view-btn {
+  padding: 5px 12px;
+  border: none;
+  border-right: 1px solid var(--rss-border);
+  background: var(--rss-bg);
+  color: var(--rss-text-sm);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.rss-view-btn:last-child {
+  border-right: none;
+}
+
+.rss-view-btn:hover {
+  background: var(--rss-bg-alt);
+}
+
+.rss-view-btn--active {
+  background: var(--rss-primary);
+  color: #fff;
+}
+
+.rss-view-btn--active:hover {
+  background: #2563eb;
+}
+
+/* ── Time grid (Day & Week) ────────────────────────────────── */
+.rss-timegrid {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Sticky day-of-week column header row */
+.rss-timegrid-allday {
+  display: flex;
+  border-bottom: 1px solid var(--rss-border);
+  flex-shrink: 0;
+}
+
+.rss-timegrid-allday-gutter {
+  width: var(--rss-time-gutter-w);
+  flex-shrink: 0;
+  border-right: 1px solid var(--rss-border);
+}
+
+.rss-day-headers {
+  display: flex;
+  flex: 1;
+}
+
+.rss-day-header {
+  flex: 1;
+  padding: 6px 4px;
+  text-align: center;
+  border-right: 1px solid var(--rss-border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.rss-day-header:last-child {
+  border-right: none;
+}
+
+.rss-day-header-weekday {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--rss-text-muted);
+  letter-spacing: 0.05em;
+}
+
+.rss-day-header-num {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--rss-text);
+}
+
+.rss-day-header-num--today {
+  background: var(--rss-primary);
+  color: #fff;
+}
+
+/* Scrollable body */
+.rss-timegrid-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+}
+
+.rss-timegrid-body {
+  display: flex;
+  position: relative;
+}
+
+/* Time labels gutter */
+.rss-time-gutter {
+  width: var(--rss-time-gutter-w);
+  flex-shrink: 0;
+  border-right: 1px solid var(--rss-border);
+  position: relative;
+}
+
+.rss-time-label {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-right: 8px;
+  padding-top: 0;
+  font-size: 11px;
+  color: var(--rss-text-muted);
+  font-weight: 500;
+  /* Each label sits at the top of its hour cell */
+  transform: translateY(-50%);
+}
+
+/* Day columns */
+.rss-columns {
+  flex: 1;
+  display: flex;
+  position: relative;
+}
+
+.rss-column {
+  flex: 1;
+  position: relative;
+  border-right: 1px solid var(--rss-border-light);
+}
+
+.rss-column:last-child {
+  border-right: none;
+}
+
+.rss-column--today {
+  background: var(--rss-today-bg);
+}
+
+/* Hour-cell lines inside each column */
+.rss-hour-cell {
+  border-top: 1px solid var(--rss-border-light);
+  cursor: pointer;
+  position: relative;
+}
+
+.rss-hour-cell:first-child {
+  border-top: none;
+}
+
+/* 30-minute dashed sub-divider */
+.rss-hour-cell::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed var(--rss-border-light);
+  pointer-events: none;
+}
+
+.rss-hour-cell:hover {
+  background: rgb(59 130 246 / 0.04);
+}
+
+/* Current time indicator */
+.rss-now-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.rss-now-line::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  flex-shrink: 0;
+}
+
+.rss-now-line::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: #ef4444;
+}
+
+/* ── Event items ───────────────────────────────────────────── */
+.rss-event {
+  position: absolute;
+  border-radius: var(--rss-event-radius);
+  padding: 3px 6px;
+  overflow: hidden;
+  cursor: grab;
+  box-shadow: var(--rss-shadow);
+  transition: box-shadow 0.15s, opacity 0.15s;
+  /* Prevent accidental text selection on double-click */
+  user-select: none;
+  /* Sit above the hour grid lines */
+  z-index: 1;
+}
+
+.rss-event:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.15), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  z-index: 2;
+}
+
+.rss-event:active {
+  cursor: grabbing;
+}
+
+.rss-event--dragging {
+  opacity: 0.35;
+  cursor: grabbing;
+  box-shadow: none;
+}
+
+.rss-event--resizing {
+  cursor: ns-resize;
+}
+
+.rss-event-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rss-event-time {
+  font-size: 11px;
+  color: rgb(255 255 255 / 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Bottom resize handle — 8 px tall strip */
+.rss-event-resize-handle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  cursor: ns-resize;
+  background: rgb(0 0 0 / 0.15);
+  border-radius: 0 0 var(--rss-event-radius) var(--rss-event-radius);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.rss-event:hover .rss-event-resize-handle {
+  opacity: 1;
+}
+
+/* DragOverlay clone — full opacity while floating */
+.rss-drag-overlay .rss-event {
+  opacity: 1;
+  cursor: grabbing;
+  box-shadow: 0 8px 16px rgb(0 0 0 / 0.2);
+  pointer-events: none;
+}
+
+/* ── Month view ────────────────────────────────────────────── */
+.rss-month {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.rss-month-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-bottom: 1px solid var(--rss-border);
+  flex-shrink: 0;
+}
+
+.rss-month-weekday {
+  padding: 6px 4px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--rss-text-muted);
+  border-right: 1px solid var(--rss-border-light);
+}
+
+.rss-month-weekday:last-child {
+  border-right: none;
+}
+
+.rss-month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.rss-month-cell {
+  border-right: 1px solid var(--rss-border-light);
+  border-bottom: 1px solid var(--rss-border-light);
+  padding: 4px;
+  min-height: 100px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: background 0.1s;
+}
+
+.rss-month-cell:hover {
+  background: var(--rss-bg-alt);
+}
+
+.rss-month-cell:nth-child(7n) {
+  border-right: none;
+}
+
+.rss-month-cell--other-month {
+  background: var(--rss-bg-alt);
+}
+
+.rss-month-cell--today {
+  background: var(--rss-today-bg);
+}
+
+.rss-month-day-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--rss-text);
+  flex-shrink: 0;
+}
+
+.rss-month-day-num--today {
+  background: var(--rss-primary);
+  color: #fff;
+}
+
+.rss-month-day-num--other {
+  color: var(--rss-text-muted);
+}
+
+/* Compact event pill in month grid */
+.rss-month-event {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: filter 0.1s;
+}
+
+.rss-month-event:hover {
+  filter: brightness(0.9);
+}
+
+.rss-month-more {
+  font-size: 11px;
+  color: var(--rss-text-muted);
+  padding: 1px 4px;
+  cursor: pointer;
+}
+
+/* ── Event modal ───────────────────────────────────────────── */
+.rss-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.rss-modal {
+  background: var(--rss-bg);
+  border-radius: 8px;
+  box-shadow: 0 20px 40px rgb(0 0 0 / 0.15);
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rss-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--rss-text);
+  margin: 0;
+}
+
+.rss-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rss-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.rss-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--rss-text-sm);
+}
+
+.rss-input {
+  padding: 7px 10px;
+  border: 1px solid var(--rss-border);
+  border-radius: var(--rss-radius);
+  font-size: 13px;
+  color: var(--rss-text);
+  background: var(--rss-bg);
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+}
+
+.rss-input:focus {
+  border-color: var(--rss-primary);
+  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.15);
+}
+
+.rss-color-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rss-color-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.1s, border-color 0.1s;
+}
+
+.rss-color-swatch:hover {
+  transform: scale(1.15);
+}
+
+.rss-color-swatch--selected {
+  border-color: var(--rss-text);
+  transform: scale(1.15);
+}
+
+.rss-modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.rss-modal-actions-left {
+  flex: 1;
+}

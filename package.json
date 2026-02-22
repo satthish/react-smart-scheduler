@@ -1,0 +1,11 @@
+{
+  "name": "react-smart-scheduler-workspace",
+  "workspaces": [
+    "packages/react-smart-scheduler"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=packages/react-smart-scheduler",
+    "build": "npm run build --workspace=packages/react-smart-scheduler",
+    "preview": "npm run preview --workspace=packages/react-smart-scheduler"
+  }
+}
