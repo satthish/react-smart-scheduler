@@ -1,0 +1,31 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# .npmignore for react-smart-scheduler
+#
+# Belt-and-suspenders protection alongside the "files" field in package.json.
+# Only dist/, README.md, and LICENSE are published.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Source (consumers get the compiled dist, not the source)
+src/
+
+# Demo app (not part of the library)
+demo/
+demo-dist/
+demo-hostinger.zip
+
+# Config / build tooling
+vite.config.ts
+vite.demo.config.ts
+tsconfig.json
+tsconfig.lib.json
+
+# Dev artefacts
+node_modules/
+*.tsbuildinfo
+*.tgz
+*.log
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

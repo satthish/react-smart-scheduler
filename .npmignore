@@ -1,0 +1,13 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Root-level .npmignore
+#
+# This workspace root is PRIVATE and must never be published to npm.
+# The publishable package lives in packages/react-smart-scheduler/.
+#
+# To publish the library:
+#   cd packages/react-smart-scheduler
+#   npm publish
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Block everything — this root should never be packed
+*

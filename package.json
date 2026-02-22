@@ -1,11 +1,17 @@
 {
   "name": "react-smart-scheduler-workspace",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Monorepo workspace root — not published to npm. See packages/react-smart-scheduler.",
   "workspaces": [
     "packages/react-smart-scheduler"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace=packages/react-smart-scheduler",
-    "build": "npm run build --workspace=packages/react-smart-scheduler",
-    "preview": "npm run preview --workspace=packages/react-smart-scheduler"
+    "dev":            "npm run dev            --workspace=packages/react-smart-scheduler",
+    "build":          "npm run build          --workspace=packages/react-smart-scheduler",
+    "build:demo":     "npm run build:demo     --workspace=packages/react-smart-scheduler",
+    "preview":        "npm run preview        --workspace=packages/react-smart-scheduler",
+    "type-check":     "npm run type-check     --workspace=packages/react-smart-scheduler",
+    "prepublishOnly": "echo '\n\n  ❌ ERROR: Do not run npm publish from the workspace root!\n\n  Run instead:\n    cd packages/react-smart-scheduler\n    npm publish\n\n' && exit 1"
   }
 }

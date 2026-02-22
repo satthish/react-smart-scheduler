@@ -12,7 +12,12 @@
       "Bash(npm run build:demo:*)",
       "Bash(zip:*)",
       "Bash(unzip:*)",
-      "Bash(open:*)"
+      "Bash(open:*)",
+      "Bash(node -e:*)",
+      "Bash(npm pkg get:*)",
+      "Bash(npm install:*)",
+      "Bash(npm pack:*)",
+      "Bash(npm publish:*)"
     ]
   }
 }
