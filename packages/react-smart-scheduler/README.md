@@ -12,7 +12,7 @@ Day · Week · Month views · Drag & drop · Resize · TypeScript · Zero UI fra
 [![license](https://img.shields.io/npm/l/react-smart-scheduler?color=purple)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org/)
 
-[**Live Demo →**](https://yourname.github.io/react-smart-scheduler) &nbsp;|&nbsp;
+[**Live Demo →**](https://scheduler.hazhtech.com/) &nbsp;|&nbsp;
 [**GitHub →**](https://github.com/yourname/react-smart-scheduler) &nbsp;|&nbsp;
 [**npm →**](https://www.npmjs.com/package/react-smart-scheduler)
 
@@ -279,7 +279,7 @@ The `prepublishOnly` hook ensures the published package is always a fresh, type-
 
 ## 📸 Demo
 
-**[👉 Open live demo](https://yourname.github.io/react-smart-scheduler)**
+**[👉 Open live demo](https://scheduler.hazhtech.com/)**
 
 Features you can try:
 

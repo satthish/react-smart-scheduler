@@ -43,8 +43,7 @@ const SEED_EVENTS: CalendarEvent[] = [
   { id: generateId(), title: 'Retro',            start: makeDate(3,  16, 0), end: makeDate(3,  17, 0), color: '#8b5cf6' },
 ];
 
-// ── Donate / Support links ───────────────────────────────────────────────────
-// Replace these with your real profiles before publishing.
+// ── Support links ─────────────────────────────────────────────────────────────
 const LINKS = {
   github:     'https://github.com/yourname/react-smart-scheduler',
   bmc:        'https://buymeacoffee.com/sathish.hazhtech',
@@ -53,24 +52,22 @@ const LINKS = {
   issues:     'https://github.com/yourname/react-smart-scheduler/issues',
 };
 
-// ── Donate banner component ──────────────────────────────────────────────────
+// ── Full-width donate top bar ─────────────────────────────────────────────────
 
-const DonateBanner: React.FC = () => (
-  <div className="demo-donate">
-    <div className="demo-donate-header">
-      <span className="demo-donate-heart" aria-hidden="true">❤️</span>
-      <span className="demo-donate-title">Support this project</span>
+const DonateTopBar: React.FC = () => (
+  <div className="demo-topnav" role="banner">
+    <div className="demo-topnav-left">
+      <span className="demo-topnav-heart" aria-hidden="true">❤️</span>
+      <span className="demo-topnav-msg">
+        <strong>react-smart-scheduler</strong> is free &amp; open-source — if it saves you time, please support the project!
+      </span>
     </div>
-    <p className="demo-donate-desc">
-      react-smart-scheduler is free and open-source. If it saves you time,
-      consider buying the maintainer a coffee — it keeps the project alive!
-    </p>
-    <div className="demo-donate-btns">
+    <div className="demo-topnav-btns">
       <a
         href={LINKS.bmc}
         target="_blank"
         rel="noopener noreferrer"
-        className="demo-donate-btn demo-donate-btn--bmc"
+        className="demo-topnav-btn demo-topnav-btn--bmc"
         aria-label="Buy Me a Coffee"
       >
         ☕ Buy me a coffee
@@ -79,7 +76,7 @@ const DonateBanner: React.FC = () => (
         href={LINKS.sponsors}
         target="_blank"
         rel="noopener noreferrer"
-        className="demo-donate-btn demo-donate-btn--gh"
+        className="demo-topnav-btn demo-topnav-btn--gh"
         aria-label="GitHub Sponsors"
       >
         🩷 GitHub Sponsors
@@ -135,73 +132,76 @@ export const App: React.FC = () => {
   return (
     <div className="demo-layout">
 
-      {/* ── Sidebar ──────────────────────────────────────────────── */}
-      <aside className="demo-sidebar" aria-label="Demo controls">
+      {/* ── Full-width donate bar at the very top ──────────────── */}
+      <DonateTopBar />
 
-        {/* Logo / title */}
-        <div className="demo-logo">
-          <span className="demo-logo-icon" aria-hidden="true">📅</span>
-          <div>
-            <div className="demo-logo-name">react-smart-scheduler</div>
-            <div className="demo-logo-version">v{VERSION} — live demo</div>
+      {/* ── Horizontal body: sidebar + main ───────────────────── */}
+      <div className="demo-body">
+
+        {/* ── Sidebar ──────────────────────────────────────────── */}
+        <aside className="demo-sidebar" aria-label="Demo controls">
+
+          {/* Logo / title */}
+          <div className="demo-logo">
+            <span className="demo-logo-icon" aria-hidden="true">📅</span>
+            <div>
+              <div className="demo-logo-name">react-smart-scheduler</div>
+              <div className="demo-logo-version">v{VERSION} — live demo</div>
+            </div>
           </div>
-        </div>
 
-        {/* External links */}
-        <div className="demo-links">
-          <a href={LINKS.github}  target="_blank" rel="noopener noreferrer" className="demo-link" title="View on GitHub">
-            <GithubIcon /> GitHub
-          </a>
-          <a href={LINKS.npm}     target="_blank" rel="noopener noreferrer" className="demo-link" title="View on npm">
-            <NpmIcon /> npm
-          </a>
-          <a href={LINKS.issues}  target="_blank" rel="noopener noreferrer" className="demo-link" title="Report a bug">
-            🐛 Issues
-          </a>
-        </div>
-
-        {/* ── Donate banner ───────────────────────────────────────── */}
-        <DonateBanner />
-
-        {/* Actions */}
-        <div className="demo-section">
-          <h3 className="demo-section-title">Playground actions</h3>
-          <button className="demo-action-btn" onClick={addQuickEvent}>
-            + Add random event
-          </button>
-          <button
-            className="demo-action-btn demo-action-btn--secondary"
-            onClick={() => { setEvents([]); addLog('🧹 Cleared all events'); }}
-          >
-            Clear all events
-          </button>
-          <button
-            className="demo-action-btn demo-action-btn--secondary"
-            onClick={() => { setEvents(SEED_EVENTS); addLog('🔄 Reset to seed data'); }}
-          >
-            Reset to seed data
-          </button>
-        </div>
-
-        {/* Event activity log */}
-        <div className="demo-section demo-section--grow">
-          <h3 className="demo-section-title">Activity log</h3>
-          <div className="demo-log" aria-live="polite" aria-label="Event activity log">
-            {log.length === 0 && (
-              <p className="demo-log-empty">
-                Interact with the calendar to see activity here.
-              </p>
-            )}
-            {log.map((entry, i) => (
-              <div key={i} className="demo-log-entry">{entry}</div>
-            ))}
+          {/* External links */}
+          <div className="demo-links">
+            <a href={LINKS.github}  target="_blank" rel="noopener noreferrer" className="demo-link" title="View on GitHub">
+              <GithubIcon /> GitHub
+            </a>
+            <a href={LINKS.npm}     target="_blank" rel="noopener noreferrer" className="demo-link" title="View on npm">
+              <NpmIcon /> npm
+            </a>
+            <a href={LINKS.issues}  target="_blank" rel="noopener noreferrer" className="demo-link" title="Report a bug">
+              🐛 Issues
+            </a>
           </div>
-        </div>
 
-        {/* Usage snippet */}
-        <div className="demo-section">
-          <h3 className="demo-section-title">Usage</h3>
-          <pre className="demo-code" aria-label="Usage example">{`<Scheduler
+          {/* Actions */}
+          <div className="demo-section">
+            <h3 className="demo-section-title">Playground actions</h3>
+            <button className="demo-action-btn" onClick={addQuickEvent}>
+              + Add random event
+            </button>
+            <button
+              className="demo-action-btn demo-action-btn--secondary"
+              onClick={() => { setEvents([]); addLog('🧹 Cleared all events'); }}
+            >
+              Clear all events
+            </button>
+            <button
+              className="demo-action-btn demo-action-btn--secondary"
+              onClick={() => { setEvents(SEED_EVENTS); addLog('🔄 Reset to seed data'); }}
+            >
+              Reset to seed data
+            </button>
+          </div>
+
+          {/* Event activity log */}
+          <div className="demo-section demo-section--grow">
+            <h3 className="demo-section-title">Activity log</h3>
+            <div className="demo-log" aria-live="polite" aria-label="Event activity log">
+              {log.length === 0 && (
+                <p className="demo-log-empty">
+                  Interact with the calendar to see activity here.
+                </p>
+              )}
+              {log.map((entry, i) => (
+                <div key={i} className="demo-log-entry">{entry}</div>
+              ))}
+            </div>
+          </div>
+
+          {/* Usage snippet */}
+          <div className="demo-section">
+            <h3 className="demo-section-title">Usage</h3>
+            <pre className="demo-code" aria-label="Usage example">{`<Scheduler
   events={events}
   view={view}
   date={date}
@@ -211,43 +211,35 @@ export const App: React.FC = () => {
   onViewChange={setView}
   onDateChange={setDate}
 />`}</pre>
-        </div>
-
-      </aside>
-
-      {/* ── Main scheduler ────────────────────────────────────────── */}
-      <main className="demo-main" aria-label="Scheduler demo">
-        {/* Top bar inside main — shows tips + a floating donate pill */}
-        <div className="demo-topbar">
-          <div className="demo-tips">
-            <span>💡</span>
-            <span><strong>Click</strong> an empty slot to add · <strong>Drag</strong> to move · <strong>Drag bottom edge</strong> to resize</span>
           </div>
-          <a
-            href={LINKS.bmc}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="demo-topbar-donate"
-            aria-label="Support the project on Buy Me a Coffee"
-          >
-            ☕ Donate
-          </a>
-        </div>
 
-        <Scheduler
-          events={events}
-          view={view}
-          date={date}
-          onEventAdd={handleEventAdd}
-          onEventChange={handleEventChange}
-          onEventDelete={handleEventDelete}
-          onViewChange={setView}
-          onDateChange={setDate}
-          hourHeight={64}
-          startHour={0}
-          endHour={24}
-        />
-      </main>
+        </aside>
+
+        {/* ── Main scheduler ────────────────────────────────────── */}
+        <main className="demo-main" aria-label="Scheduler demo">
+          {/* Tips bar */}
+          <div className="demo-topbar">
+            <div className="demo-tips">
+              <span>💡</span>
+              <span><strong>Click</strong> an empty slot to add · <strong>Drag</strong> to move · <strong>Drag bottom edge</strong> to resize</span>
+            </div>
+          </div>
+
+          <Scheduler
+            events={events}
+            view={view}
+            date={date}
+            onEventAdd={handleEventAdd}
+            onEventChange={handleEventChange}
+            onEventDelete={handleEventDelete}
+            onViewChange={setView}
+            onDateChange={setDate}
+            hourHeight={64}
+            startHour={0}
+            endHour={24}
+          />
+        </main>
+      </div>
     </div>
   );
 };

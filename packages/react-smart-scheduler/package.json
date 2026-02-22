@@ -1,6 +1,6 @@
 {
   "name": "react-smart-scheduler",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A production-ready, open-source React scheduler/calendar component with Day, Week, and Month views — drag-and-drop, resize, and a clean controlled-component API.",
   "author": {
     "name": "react-smart-scheduler contributors",
