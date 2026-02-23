@@ -11,7 +11,7 @@ body {
   line-height: 1.5;
 }
 
-/* ── Root layout — vertical flex: topnav → body ────────────── */
+/* ── Root layout — vertical flex: topnav → body → mobile-bar ── */
 .demo-layout {
   display: flex;
   flex-direction: column;
@@ -290,7 +290,7 @@ body {
   min-width: 0;
 }
 
-/* Tips bar (no donate pill anymore) */
+/* Tips bar */
 .demo-topbar {
   display: flex;
   align-items: center;
@@ -322,13 +322,113 @@ body {
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.08), 0 4px 20px rgb(0 0 0 / 0.06);
 }
 
-/* ── Responsive ────────────────────────────────────────────── */
-@media (max-width: 768px) {
-  .demo-topnav         { padding: 0 12px; gap: 8px; }
+/* ═══════════════════════════════════════════════════════════
+   MOBILE ACTION BAR
+   Shown at the bottom on small screens instead of the sidebar.
+   Provides quick access to playground actions.
+   ═══════════════════════════════════════════════════════════ */
+.demo-mobile-bar {
+  /* Hidden by default — shown only on mobile via media query below */
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #0f172a;
+  border-top: 1px solid #1e293b;
+  flex-shrink: 0;
+  /* Safe area for iOS home indicator */
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+}
+
+.demo-mobile-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px 6px;
+  border-radius: 8px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #1e293b;
+  color: #94a3b8;
+  text-decoration: none;
+  transition: background 0.15s;
+  min-height: 44px; /* WCAG touch target */
+  position: relative;
+}
+
+.demo-mobile-btn:hover,
+.demo-mobile-btn:active {
+  background: #334155;
+  color: #e2e8f0;
+}
+
+.demo-mobile-btn--primary {
+  background: #3b82f6;
+  color: #fff;
+  flex: 1.5; /* slightly wider than secondary buttons */
+}
+
+.demo-mobile-btn--primary:hover {
+  background: #2563eb;
+}
+
+.demo-mobile-btn--link {
+  flex: 0.6; /* narrower — icon only */
+  color: #94a3b8;
+}
+
+/* Badge showing log count on the GitHub icon button */
+.demo-mobile-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 1px 4px;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — MOBILE  (< 768 px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  /* Compress donate bar */
+  .demo-topnav         { padding: 0 12px; gap: 6px; height: 44px; }
   .demo-topnav-msg     { display: none; }
   .demo-topnav-btn     { padding: 5px 10px; font-size: 11px; }
+
+  /* Hide the sidebar entirely — mobile bar takes over */
   .demo-sidebar        { display: none; }
-  .demo-main           { padding: 8px; }
-  .demo-topbar         { flex-direction: column; align-items: stretch; }
-  .demo-tips           { display: none; }
+
+  /* Main: tighter padding, no gap for tips bar */
+  .demo-main           { padding: 8px; gap: 6px; }
+
+  /* Tips bar: shorter text, visible but compact */
+  .demo-topbar         { gap: 6px; }
+  .demo-tips           { font-size: 11px; padding: 5px 10px; }
+
+  /* Show the mobile action bar at the bottom */
+  .demo-mobile-bar     { display: flex; }
+
+  /* Ensure the body row fills the space between nav and mobile bar */
+  .demo-body           { min-height: 0; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — TABLET  (768 px – 1023 px)
+   ═══════════════════════════════════════════════════════════ */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Narrow sidebar on tablet to give scheduler more room */
+  .demo-sidebar        { width: 220px; }
+  .demo-main           { padding: 10px; }
+  /* Hide the code snippet on tablet — save vertical space */
+  .demo-section:last-child { display: none; }
 }

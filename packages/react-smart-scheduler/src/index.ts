@@ -42,3 +42,22 @@ export { EVENT_COLORS } from './utils/eventUtils';
  * Useful when pre-assigning colours to events before they are created.
  */
 export { pickColor } from './utils/eventUtils';
+
+// ── Responsive utilities ──────────────────────────────────────────────────────
+
+/**
+ * React hook that returns the current responsive breakpoint and re-renders
+ * whenever the window crosses a threshold.
+ *
+ *   'mobile'  — < 640 px   (phones)
+ *   'tablet'  — 640–1023 px (tablets, small laptops)
+ *   'desktop' — ≥ 1024 px  (standard laptop / desktop)
+ *
+ * Useful for driving responsive defaults in the consuming application,
+ * e.g. defaulting to `view="day"` on mobile.
+ *
+ *   const bp = useBreakpoint();
+ *   const [view, setView] = useState(bp === 'mobile' ? 'day' : 'week');
+ */
+export { useBreakpoint } from './hooks/useBreakpoint';
+export type { Breakpoint } from './hooks/useBreakpoint';
