@@ -1,18 +1,5 @@
 /**
  * react-smart-scheduler — Demo playground
- *
- * This file is intentionally written the same way a real consumer would
- * integrate the library: no internal imports, no magic, just the public API.
- *
- * Features showcased:
- *  • Day / Week / Month views
- *  • Adding events (click empty slot → modal)
- *  • Moving events (drag & drop, including touch)
- *  • Resizing events (drag bottom handle)
- *  • Controlled state from a parent component
- *  • Responsive: mobile defaults to Day view; tablet/desktop to Week view
- *  • Mobile action bar (replaces hidden sidebar on small screens)
- *  • Event activity log
  */
 import React, { useState } from 'react';
 import {
@@ -88,9 +75,7 @@ const DonateTopBar: React.FC = () => (
   </div>
 );
 
-// ── Mobile action bar ─────────────────────────────────────────────────────────
-// Shown at the bottom of the screen on small screens instead of the sidebar.
-// Gives quick access to the most common playground actions.
+// Mobile action bar — shown at the bottom on small screens instead of the sidebar.
 
 interface MobileBarProps {
   logCount: number;
@@ -132,9 +117,6 @@ export const App: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>(SEED_EVENTS);
   const [log,    setLog]    = useState<string[]>([]);
 
-  // ── Responsive view default ────────────────────────────────────────────────
-  // Mobile → Day view (single column fits narrow screens perfectly)
-  // Tablet / Desktop → Week view (shows the full week at a glance)
   const [view, setView] = useState<ViewType>(() =>
     typeof window !== 'undefined' && window.innerWidth < 640 ? 'day' : 'week'
   );
