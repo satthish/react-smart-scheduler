@@ -11,7 +11,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Library version — matches package.json version field. */
-export const VERSION = '0.1.2' as const;
+export const VERSION = '0.1.3' as const;
 
 // ── Root component ────────────────────────────────────────────────────────────
 export { Scheduler } from './Scheduler';
