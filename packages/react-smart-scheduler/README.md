@@ -106,6 +106,93 @@ export default function App() {
 
 ---
 
+## 🎨 Styling options
+
+react-smart-scheduler ships with a zero-dependency default theme and two optional CSS adapters. All three are drop-in replacements for `<Scheduler />` — just swap the import.
+
+| Adapter | Import | Accent | Font |
+|---|---|---|---|
+| **Default** | `import { Scheduler }` | Blue `#3b82f6` | System UI |
+| **Tailwind** | `import { TailwindScheduler }` | Indigo `#6366f1` | Inter |
+| **MUI** | `import { MuiScheduler }` | MUI Blue `#1976d2` | Roboto |
+
+### Default (built-in)
+
+```tsx
+import { Scheduler } from 'react-smart-scheduler';
+import 'react-smart-scheduler/dist/scheduler.css';
+
+<Scheduler events={events} onEventAdd={...} onEventChange={...} onEventDelete={...} />
+```
+
+### Tailwind-inspired adapter
+
+No Tailwind installation required — this is CSS-only styling inspired by the Tailwind design system.
+
+```tsx
+import { TailwindScheduler } from 'react-smart-scheduler';
+import 'react-smart-scheduler/dist/scheduler.css';
+
+<TailwindScheduler events={events} onEventAdd={...} onEventChange={...} onEventDelete={...} />
+```
+
+### MUI-inspired adapter
+
+No `@mui/material` installation required — pure CSS that mirrors Material Design aesthetics.
+
+```tsx
+import { MuiScheduler } from 'react-smart-scheduler';
+import 'react-smart-scheduler/dist/scheduler.css';
+
+<MuiScheduler events={events} onEventAdd={...} onEventChange={...} onEventDelete={...} />
+```
+
+### Headless (bring your own styles)
+
+Use `HeadlessScheduler` when you want the scheduler's logic with a completely custom CSS layer.
+
+```tsx
+import { HeadlessScheduler } from 'react-smart-scheduler';
+import 'react-smart-scheduler/dist/scheduler.css'; // structural styles only
+
+<HeadlessScheduler events={events} className="my-custom-theme" ... />
+```
+
+### Custom CSS tokens
+
+All adapters expose the same CSS custom properties. Override any token on a parent element:
+
+```css
+/* your-theme.css */
+.rss-root {
+  --rss-primary:        #0ea5e9; /* sky-500 */
+  --rss-primary-light:  #f0f9ff;
+  --rss-today-bg:       #f0f9ff;
+  --rss-radius:         10px;
+  --rss-event-radius:   8px;
+}
+```
+
+### Slots — swap built-in sub-components
+
+For deeper customisation, swap the `Header` or `EventModal` with your own components:
+
+```tsx
+import { Scheduler, HeaderSlotProps, EventModalSlotProps } from 'react-smart-scheduler';
+
+const MyHeader: React.FC<HeaderSlotProps> = ({ view, date, onViewChange, onDateChange }) => (
+  // your custom header JSX
+);
+
+<Scheduler
+  events={events}
+  slots={{ Header: MyHeader }}
+  ...
+/>
+```
+
+---
+
 ## 📖 API
 
 ### `<Scheduler />` Props
@@ -124,6 +211,7 @@ export default function App() {
 | `startHour` | `number` | `0` | First visible hour (0–23) |
 | `endHour` | `number` | `24` | Last visible hour (1–24) |
 | `className` | `string` | `''` | Extra CSS class on the root element |
+| `slots` | `SchedulerSlots` | — | Swap `Header` or `EventModal` with custom components |
 
 ### `CalendarEvent` type
 

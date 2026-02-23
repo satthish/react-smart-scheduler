@@ -44,7 +44,10 @@ export const Scheduler: React.FC<SchedulerProps> = ({
   startHour = DEFAULT_START_HOUR,
   endHour = DEFAULT_END_HOUR,
   className = '',
+  slots,
 }) => {
+  const ResolvedHeader = slots?.Header ?? Header;
+  const ResolvedEventModal = slots?.EventModal ?? EventModal;
   const breakpoint = useBreakpoint();
   const isMobile = breakpoint === 'mobile';
 
@@ -192,7 +195,7 @@ export const Scheduler: React.FC<SchedulerProps> = ({
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <Header
+        <ResolvedHeader
           view={view}
           date={date}
           isMobile={isMobile}
@@ -244,7 +247,7 @@ export const Scheduler: React.FC<SchedulerProps> = ({
       </DndContext>
 
       {isModalOpen && (
-        <EventModal
+        <ResolvedEventModal
           event={editingEvent}
           initialStart={pendingSlot?.start}
           initialEnd={pendingSlot?.end}

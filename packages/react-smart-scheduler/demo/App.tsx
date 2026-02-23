@@ -4,6 +4,8 @@
 import React, { useState } from 'react';
 import {
   Scheduler,
+  TailwindScheduler,
+  MuiScheduler,
   CalendarEvent,
   ViewType,
   generateId,
@@ -41,6 +43,15 @@ const LINKS = {
   npm:        'https://www.npmjs.com/package/react-smart-scheduler',
   issues:     'https://github.com/satthish/react-smart-scheduler/issues',
 };
+
+// ── Theme mode ────────────────────────────────────────────────────────────────
+type ThemeMode = 'default' | 'tailwind' | 'mui';
+
+const THEME_LABELS: { key: ThemeMode; label: string; desc: string }[] = [
+  { key: 'default',  label: 'Default',  desc: 'Built-in blue theme' },
+  { key: 'tailwind', label: 'Tailwind', desc: 'Indigo / Inter'       },
+  { key: 'mui',      label: 'MUI',      desc: 'Material blue / Roboto' },
+];
 
 // ── Full-width donate top bar ─────────────────────────────────────────────────
 
@@ -116,6 +127,7 @@ export const App: React.FC = () => {
 
   const [events, setEvents] = useState<CalendarEvent[]>(SEED_EVENTS);
   const [log,    setLog]    = useState<string[]>([]);
+  const [theme,  setTheme]  = useState<ThemeMode>('default');
 
   const [view, setView] = useState<ViewType>(() =>
     typeof window !== 'undefined' && window.innerWidth < 640 ? 'day' : 'week'
@@ -159,6 +171,27 @@ export const App: React.FC = () => {
   const resetToSeed = () => { setEvents(SEED_EVENTS); addLog('🔄 Reset to seed data'); };
   const clearAll    = () => { setEvents([]);           addLog('🧹 Cleared all events'); };
 
+  // ── Pick the right scheduler component based on theme ─────────────────────
+
+  const schedulerProps = {
+    events,
+    view,
+    date,
+    onEventAdd:    handleEventAdd,
+    onEventChange: handleEventChange,
+    onEventDelete: handleEventDelete,
+    onViewChange:  setView,
+    onDateChange:  setDate,
+    hourHeight:    64,
+    startHour:     0,
+    endHour:       24,
+  };
+
+  const SchedulerView =
+    theme === 'tailwind' ? <TailwindScheduler {...schedulerProps} /> :
+    theme === 'mui'      ? <MuiScheduler      {...schedulerProps} /> :
+                           <Scheduler         {...schedulerProps} />;
+
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
@@ -193,6 +226,27 @@ export const App: React.FC = () => {
             <a href={LINKS.issues}  target="_blank" rel="noopener noreferrer" className="demo-link" title="Report a bug">
               🐛 Issues
             </a>
+          </div>
+
+          {/* UI Theme switcher */}
+          <div className="demo-section">
+            <h3 className="demo-section-title">UI Theme</h3>
+            <div className="demo-theme-group" role="group" aria-label="UI theme">
+              {THEME_LABELS.map(({ key, label, desc }) => (
+                <button
+                  key={key}
+                  className={`demo-theme-btn ${theme === key ? 'demo-theme-btn--active' : ''}`}
+                  onClick={() => setTheme(key)}
+                  aria-pressed={theme === key}
+                  title={desc}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <p className="demo-theme-desc">
+              {THEME_LABELS.find((t) => t.key === theme)?.desc}
+            </p>
           </div>
 
           {/* Actions */}
@@ -261,19 +315,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          <Scheduler
-            events={events}
-            view={view}
-            date={date}
-            onEventAdd={handleEventAdd}
-            onEventChange={handleEventChange}
-            onEventDelete={handleEventDelete}
-            onViewChange={setView}
-            onDateChange={setDate}
-            hourHeight={64}
-            startHour={0}
-            endHour={24}
-          />
+          {SchedulerView}
         </main>
       </div>
 

@@ -1,0 +1,70 @@
+/* ============================================================
+   react-smart-scheduler — Material UI-inspired theme
+   Applies MUI blue, Roboto font, and Material Design elevation.
+   Add class "rss-theme-mui" via MuiScheduler or className.
+   ============================================================ */
+
+.rss-root.rss-theme-mui {
+  --rss-primary:       #1976d2; /* MUI primary blue */
+  --rss-primary-light: #e3f2fd; /* blue-50          */
+  --rss-today-bg:      #e3f2fd;
+  --rss-radius:        4px;
+  --rss-event-radius:  4px;
+  --rss-shadow:        0 2px 1px -1px rgb(0 0 0 / 0.2),
+                       0 1px 1px  0  rgb(0 0 0 / 0.14),
+                       0 1px 3px  0  rgb(0 0 0 / 0.12);
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.rss-root.rss-theme-mui .rss-btn {
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+.rss-root.rss-theme-mui .rss-btn--primary {
+  background: #1976d2;
+  border-color: #1976d2;
+}
+
+.rss-root.rss-theme-mui .rss-btn--primary:hover {
+  background: #1565c0;
+  border-color: #1565c0;
+}
+
+.rss-root.rss-theme-mui .rss-view-btn {
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+.rss-root.rss-theme-mui .rss-view-btn--active {
+  background: #1976d2;
+}
+
+.rss-root.rss-theme-mui .rss-view-btn--active:hover {
+  background: #1565c0;
+}
+
+.rss-root.rss-theme-mui .rss-input:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgb(25 118 210 / 0.2);
+}
+
+.rss-root.rss-theme-mui .rss-hour-cell:hover {
+  background: rgb(25 118 210 / 0.04);
+}
+
+.rss-root.rss-theme-mui .rss-day-header-num--today,
+.rss-root.rss-theme-mui .rss-month-day-num--today {
+  background: #1976d2;
+}
+
+.rss-root.rss-theme-mui .rss-modal {
+  border-radius: 4px;
+  box-shadow: 0 11px 15px -7px rgb(0 0 0 / 0.2),
+              0 24px 38px  3px rgb(0 0 0 / 0.14),
+              0  9px 46px  8px rgb(0 0 0 / 0.12);
+}

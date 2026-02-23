@@ -2,6 +2,8 @@
 // Public API types — exported from the library
 // ─────────────────────────────────────────────
 
+import type React from 'react';
+
 export type ViewType = 'day' | 'week' | 'month';
 
 /**
@@ -60,6 +62,38 @@ export interface SchedulerProps {
 
   /** Extra CSS class applied to the root element. */
   className?: string;
+
+  /** Optional component overrides — swap the built-in Header or EventModal. */
+  slots?: SchedulerSlots;
+}
+
+// ─────────────────────────────────────────────
+// Slots — component override types
+// ─────────────────────────────────────────────
+
+/** Props passed to a custom Header slot component. */
+export interface HeaderSlotProps {
+  view: ViewType;
+  date: Date;
+  isMobile?: boolean;
+  onViewChange: (view: ViewType) => void;
+  onDateChange: (date: Date) => void;
+}
+
+/** Props passed to a custom EventModal slot component. */
+export interface EventModalSlotProps {
+  event: CalendarEvent | null;
+  initialStart?: Date;
+  initialEnd?: Date;
+  onSave: (data: { title: string; start: Date; end: Date; color?: string }) => void;
+  onDelete?: () => void;
+  onClose: () => void;
+}
+
+/** Map of swappable sub-components. */
+export interface SchedulerSlots {
+  Header?: React.ComponentType<HeaderSlotProps>;
+  EventModal?: React.ComponentType<EventModalSlotProps>;
 }
 
 // ─────────────────────────────────────────────
