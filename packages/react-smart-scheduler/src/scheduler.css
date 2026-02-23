@@ -2,6 +2,12 @@
    react-smart-scheduler — core styles
    All class names are prefixed with "rss-" to avoid collisions.
    Theming is done via CSS custom properties on .rss-root.
+
+   Responsive strategy:
+     • Mobile  (< 640 px)  : compact header, horizontal scroll in week view,
+                             larger touch targets, narrower time gutter.
+     • Tablet  (640–1023 px): moderate sizing, all views work without scroll.
+     • Desktop (≥ 1024 px) : full layout, full week / month grids.
    ============================================================ */
 
 /* ── Design tokens ─────────────────────────────────────────── */
@@ -21,6 +27,10 @@
   --rss-radius:         6px;
   --rss-shadow:         0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --rss-event-radius:   4px;
+  /* Minimum column width used by week view on small screens.
+     When 7 columns × min-width exceed the viewport the grid scrolls
+     horizontally while the time gutter stays sticky on the left. */
+  --rss-min-col-w:      70px;
 
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 13px;
@@ -165,17 +175,55 @@
   overflow: hidden;
 }
 
-/* Sticky day-of-week column header row */
+/*
+ * Unified scroll container for both the day-header row and the time columns.
+ * Placing everything in one scroller ensures that horizontal scrolling (on
+ * mobile week view) keeps headers and columns perfectly aligned.
+ *
+ * overflow-y: auto  → vertical scroll for the time grid
+ * overflow-x: hidden → no horizontal scroll by default (desktop/tablet)
+ *                      switched to `auto` on mobile via media query below
+ */
+.rss-timegrid-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  /* Needed so that position:sticky children (allday row, gutter) work
+     relative to this scroll container rather than a parent. */
+  position: relative;
+}
+
+/*
+ * Day-of-week header row.
+ * position:sticky + top:0  → stays visible at the top when scrolling down.
+ * z-index:3 keeps it above the event chips in the columns below.
+ * background is set so scrolled content doesn't show through.
+ */
 .rss-timegrid-allday {
   display: flex;
   border-bottom: 1px solid var(--rss-border);
   flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: var(--rss-bg);
 }
 
+/*
+ * Top-left gutter corner (blank square that aligns with the time-label gutter).
+ * position:sticky + left:0  → stays visible at the left when scrolling right
+ *                              on mobile week view.
+ * z-index:4 keeps it above the day-header cells to its right.
+ */
 .rss-timegrid-allday-gutter {
   width: var(--rss-time-gutter-w);
   flex-shrink: 0;
   border-right: 1px solid var(--rss-border);
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  background: var(--rss-bg);
 }
 
 .rss-day-headers {
@@ -224,24 +272,26 @@
 }
 
 /* Scrollable body */
-.rss-timegrid-scroll {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-}
-
 .rss-timegrid-body {
   display: flex;
   position: relative;
 }
 
-/* Time labels gutter */
+/*
+ * Time-label gutter (left column showing "1 AM", "2 AM", …).
+ * position:sticky + left:0  → stays visible at the left edge when the week
+ *                              grid is scrolled horizontally on mobile.
+ * z-index:2 keeps it above event chips but below the header row.
+ * background is solid so scrolled content doesn't bleed through.
+ */
 .rss-time-gutter {
   width: var(--rss-time-gutter-w);
   flex-shrink: 0;
   border-right: 1px solid var(--rss-border);
-  position: relative;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--rss-bg);
 }
 
 .rss-time-label {
@@ -382,7 +432,11 @@
   text-overflow: ellipsis;
 }
 
-/* Bottom resize handle — 8 px tall strip */
+/*
+ * Bottom resize handle — 8 px tall strip (desktop).
+ * On touch devices (hover: none) the height grows to 16 px and is
+ * permanently slightly visible so users can find it without hovering.
+ */
 .rss-event-resize-handle {
   position: absolute;
   bottom: 0;
@@ -398,6 +452,17 @@
 
 .rss-event:hover .rss-event-resize-handle {
   opacity: 1;
+}
+
+/*
+ * Touch screens can't hover, so always show a visible resize handle.
+ * @media (hover: none) targets touch / stylus devices regardless of size.
+ */
+@media (hover: none) {
+  .rss-event-resize-handle {
+    height: 16px; /* larger touch target */
+    opacity: 0.45; /* always slightly visible */
+  }
 }
 
 /* DragOverlay clone — full opacity while floating */
@@ -623,4 +688,180 @@
 
 .rss-modal-actions-left {
   flex: 1;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — MOBILE  (< 640 px)
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 639px) {
+
+  /* ── Root tokens ─────────────────────────────────────── */
+  .rss-root {
+    /* Narrower time gutter saves ~12 px per column on small screens */
+    --rss-time-gutter-w: 40px;
+    /* Slightly smaller font across the board */
+    font-size: 12px;
+    min-height: 400px;
+  }
+
+  /* ── Header: compact two-row layout ─────────────────── */
+  /*
+   * Row 1 (flex order 1 & 2): nav buttons  +  view switcher
+   * Row 2 (flex order 3):     period title  (full width)
+   * flex-wrap makes the title drop to its own row when it can't fit.
+   */
+  .rss-header {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: var(--rss-header-h);
+    padding: 8px 10px;
+    gap: 4px 6px;
+    align-items: center;
+  }
+
+  .rss-header-nav {
+    order: 1;
+    gap: 3px;
+  }
+
+  .rss-header-title {
+    order: 3;
+    width: 100%;
+    font-size: 13px;
+    padding: 2px 0 2px;
+    text-align: center;
+  }
+
+  .rss-view-switcher {
+    order: 2;
+    margin-left: auto; /* push to the right within row 1 */
+  }
+
+  /* ── Touch-friendly button sizes ─────────────────────── */
+  /* WCAG 2.1 SC 2.5.5 recommends ≥ 44 × 44 px touch targets.
+     We use 36 px here as a practical minimum to keep the header compact. */
+  .rss-btn {
+    min-height: 36px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .rss-btn--icon {
+    min-height: 36px;
+    min-width: 36px;
+    padding: 6px 8px;
+    font-size: 15px;
+  }
+
+  .rss-view-btn {
+    min-height: 36px;
+    padding: 5px 9px;
+    font-size: 12px;
+  }
+
+  /* ── Time grid: horizontal scroll for week view ───────── */
+  /*
+   * On mobile the 7-column week view can't fit in the viewport.
+   * overflow-x: auto enables horizontal scrolling.
+   * The time-gutter (position:sticky; left:0) stays fixed on the left,
+   * and the day-header row (position:sticky; top:0) stays at the top.
+   * Together they create a "frozen pane" effect during scrolling.
+   */
+  .rss-timegrid-scroll {
+    overflow-x: auto;
+    /* Momentum scrolling on iOS Safari */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /*
+   * Minimum column width: 7 columns × 70 px = 490 px + 40 px gutter = 530 px.
+   * On phones narrower than 530 px the grid exceeds the container and the
+   * horizontal scrollbar appears. On day view (1 column) the column grows to
+   * fill the available width — no scroll needed.
+   */
+  .rss-day-header {
+    min-width: var(--rss-min-col-w);
+  }
+
+  .rss-column {
+    min-width: var(--rss-min-col-w);
+  }
+
+  /* Smaller day-number circle to save header height */
+  .rss-day-header-num {
+    width: 24px;
+    height: 24px;
+    font-size: 13px;
+  }
+
+  /* ── Month view: compact cells ───────────────────────── */
+  .rss-month-cell {
+    min-height: 70px;
+    padding: 2px;
+  }
+
+  .rss-month-day-num {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+
+  .rss-month-weekday {
+    font-size: 10px;
+    padding: 4px 2px;
+  }
+
+  /* Compact event pills in month cells */
+  .rss-month-event {
+    font-size: 10px;
+    padding: 1px 4px;
+  }
+
+  /* ── Event modal: full-width on small screens ─────────── */
+  .rss-modal-backdrop {
+    align-items: flex-end; /* slide up from bottom */
+    padding: 0;
+  }
+
+  .rss-modal {
+    border-radius: 12px 12px 0 0;
+    max-width: 100%;
+    padding: 20px 16px;
+  }
+
+  /* Stack start/end inputs on one column (avoid tiny date pickers) */
+  .rss-form-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — TABLET  (640 px – 1023 px)
+   ══════════════════════════════════════════════════════════════ */
+@media (min-width: 640px) and (max-width: 1023px) {
+
+  /* Slightly narrower gutter saves space on smaller tablets */
+  .rss-root {
+    --rss-time-gutter-w: 46px;
+  }
+
+  /* Compact (but not wrapped) header */
+  .rss-header {
+    gap: 6px;
+    padding: 0 12px;
+  }
+
+  .rss-header-title {
+    font-size: 14px;
+  }
+
+  .rss-view-btn {
+    padding: 5px 10px;
+  }
+
+  /* Month cells: slightly smaller so full month fits on tablet portrait */
+  .rss-month-cell {
+    min-height: 80px;
+  }
 }

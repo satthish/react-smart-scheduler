@@ -7,9 +7,11 @@
  * Features showcased:
  *  • Day / Week / Month views
  *  • Adding events (click empty slot → modal)
- *  • Moving events (drag & drop)
+ *  • Moving events (drag & drop, including touch)
  *  • Resizing events (drag bottom handle)
  *  • Controlled state from a parent component
+ *  • Responsive: mobile defaults to Day view; tablet/desktop to Week view
+ *  • Mobile action bar (replaces hidden sidebar on small screens)
  *  • Event activity log
  */
 import React, { useState } from 'react';
@@ -20,6 +22,7 @@ import {
   generateId,
   EVENT_COLORS,
   VERSION,
+  useBreakpoint,
 } from 'react-smart-scheduler';
 
 // ── Seed events ──────────────────────────────────────────────────────────────
@@ -85,13 +88,57 @@ const DonateTopBar: React.FC = () => (
   </div>
 );
 
+// ── Mobile action bar ─────────────────────────────────────────────────────────
+// Shown at the bottom of the screen on small screens instead of the sidebar.
+// Gives quick access to the most common playground actions.
+
+interface MobileBarProps {
+  logCount: number;
+  onAdd: () => void;
+  onReset: () => void;
+  onClear: () => void;
+}
+
+const MobileBar: React.FC<MobileBarProps> = ({ logCount, onAdd, onReset, onClear }) => (
+  <div className="demo-mobile-bar" role="toolbar" aria-label="Quick actions">
+    <button className="demo-mobile-btn demo-mobile-btn--primary" onClick={onAdd}>
+      <span aria-hidden="true">＋</span> Add
+    </button>
+    <button className="demo-mobile-btn" onClick={onReset}>
+      <span aria-hidden="true">↺</span> Reset
+    </button>
+    <button className="demo-mobile-btn" onClick={onClear}>
+      <span aria-hidden="true">✕</span> Clear
+    </button>
+    <a
+      href={LINKS.github}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="demo-mobile-btn demo-mobile-btn--link"
+      title="GitHub"
+    >
+      <GithubIcon /> {logCount > 0 && <span className="demo-mobile-badge">{logCount}</span>}
+    </a>
+  </div>
+);
+
 // ── App ──────────────────────────────────────────────────────────────────────
 
 export const App: React.FC = () => {
+  const breakpoint = useBreakpoint();
+  const isMobile   = breakpoint === 'mobile';
+  const isTablet   = breakpoint === 'tablet';
+
   const [events, setEvents] = useState<CalendarEvent[]>(SEED_EVENTS);
-  const [view,   setView]   = useState<ViewType>('week');
-  const [date,   setDate]   = useState(new Date());
   const [log,    setLog]    = useState<string[]>([]);
+
+  // ── Responsive view default ────────────────────────────────────────────────
+  // Mobile → Day view (single column fits narrow screens perfectly)
+  // Tablet / Desktop → Week view (shows the full week at a glance)
+  const [view, setView] = useState<ViewType>(() =>
+    typeof window !== 'undefined' && window.innerWidth < 640 ? 'day' : 'week'
+  );
+  const [date, setDate] = useState(new Date());
 
   const addLog = (msg: string) =>
     setLog((prev) => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev.slice(0, 29)]);
@@ -127,6 +174,9 @@ export const App: React.FC = () => {
     handleEventAdd({ title, start, end, color });
   };
 
+  const resetToSeed = () => { setEvents(SEED_EVENTS); addLog('🔄 Reset to seed data'); };
+  const clearAll    = () => { setEvents([]);           addLog('🧹 Cleared all events'); };
+
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
@@ -138,7 +188,7 @@ export const App: React.FC = () => {
       {/* ── Horizontal body: sidebar + main ───────────────────── */}
       <div className="demo-body">
 
-        {/* ── Sidebar ──────────────────────────────────────────── */}
+        {/* ── Sidebar (hidden on mobile, shown on tablet+) ──────── */}
         <aside className="demo-sidebar" aria-label="Demo controls">
 
           {/* Logo / title */}
@@ -171,13 +221,13 @@ export const App: React.FC = () => {
             </button>
             <button
               className="demo-action-btn demo-action-btn--secondary"
-              onClick={() => { setEvents([]); addLog('🧹 Cleared all events'); }}
+              onClick={clearAll}
             >
               Clear all events
             </button>
             <button
               className="demo-action-btn demo-action-btn--secondary"
-              onClick={() => { setEvents(SEED_EVENTS); addLog('🔄 Reset to seed data'); }}
+              onClick={resetToSeed}
             >
               Reset to seed data
             </button>
@@ -217,11 +267,15 @@ export const App: React.FC = () => {
 
         {/* ── Main scheduler ────────────────────────────────────── */}
         <main className="demo-main" aria-label="Scheduler demo">
-          {/* Tips bar */}
+          {/* Tips bar — hidden on mobile to save vertical space */}
           <div className="demo-topbar">
             <div className="demo-tips">
               <span>💡</span>
-              <span><strong>Click</strong> an empty slot to add · <strong>Drag</strong> to move · <strong>Drag bottom edge</strong> to resize</span>
+              {isMobile || isTablet ? (
+                <span><strong>Tap</strong> an empty slot to add · <strong>Drag</strong> to move</span>
+              ) : (
+                <span><strong>Click</strong> an empty slot to add · <strong>Drag</strong> to move · <strong>Drag bottom edge</strong> to resize</span>
+              )}
             </div>
           </div>
 
@@ -240,6 +294,15 @@ export const App: React.FC = () => {
           />
         </main>
       </div>
+
+      {/* ── Mobile action bar (visible only on small screens) ───── */}
+      {/* Provides quick access to playground actions when the sidebar is hidden. */}
+      <MobileBar
+        logCount={log.length}
+        onAdd={addQuickEvent}
+        onReset={resetToSeed}
+        onClear={clearAll}
+      />
     </div>
   );
 };

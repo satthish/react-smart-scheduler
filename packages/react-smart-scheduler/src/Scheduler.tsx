@@ -5,6 +5,7 @@ import {
   DragOverlay,
   DragStartEvent,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -22,6 +23,7 @@ import { DayView } from './views/DayView';
 import { WeekView } from './views/WeekView';
 import { MonthView } from './views/MonthView';
 import { useScheduler } from './hooks/useScheduler';
+import { useBreakpoint } from './hooks/useBreakpoint';
 import { snapMinutes } from './utils/dateUtils';
 import { pickColor } from './utils/eventUtils';
 
@@ -50,10 +52,18 @@ const DEFAULT_END_HOUR = 24;
  * 4. Resize is handled entirely in EventItem via Pointer Capture API,
  *    completely independent of dnd-kit. EventItem calls onEventResizeEnd
  *    after commit; Scheduler forwards to onEventChange.
+ *
+ * 5. Responsive: uses useBreakpoint() to set the initial default view
+ *    when no `view` prop is provided (uncontrolled mode).
+ *    mobile → 'day', tablet/desktop → 'week'.
+ *    Both PointerSensor and TouchSensor are active so drag & drop works
+ *    on touch devices out of the box.
  */
 export const Scheduler: React.FC<SchedulerProps> = ({
   events,
-  view: viewProp = 'week',
+  // Allow `view` to be undefined so we can distinguish "not provided" from
+  // "explicitly set to 'week'" — needed for breakpoint-based default.
+  view: viewProp,
   date: dateProp,
   onEventAdd,
   onEventChange,
@@ -65,12 +75,26 @@ export const Scheduler: React.FC<SchedulerProps> = ({
   endHour = DEFAULT_END_HOUR,
   className = '',
 }) => {
+  // ── Responsive breakpoint ──────────────────────────────────────────────
+  // Used to pick a sensible default view when the consumer hasn't passed one.
+  const breakpoint = useBreakpoint();
+  const isMobile = breakpoint === 'mobile';
+
   // ── Uncontrolled fallbacks ─────────────────────────────────────────────
   // If the consumer doesn't pass view/date we manage them internally.
-  const [internalView, setInternalView] = useState(viewProp);
+  // Responsive default: mobile → day view (single column is more readable),
+  // tablet/desktop → week view.
+  const [internalView, setInternalView] = useState(() => {
+    if (viewProp !== undefined) return viewProp;
+    // Read window.innerWidth synchronously on mount so the first render
+    // already uses the correct view — avoids a flash of 'week' on mobile.
+    if (typeof window !== 'undefined' && window.innerWidth < 640) return 'day' as const;
+    return 'week' as const;
+  });
   const [internalDate, setInternalDate] = useState(dateProp ?? new Date());
 
-  const view = dateProp !== undefined ? viewProp : internalView;
+  // Controlled: use props when provided; uncontrolled: use internal state.
+  const view = viewProp !== undefined ? viewProp : internalView;
   const date = dateProp ?? internalDate;
 
   const handleViewChange = (v: typeof view) => {
@@ -103,10 +127,26 @@ export const Scheduler: React.FC<SchedulerProps> = ({
   const gridMetrics = useRef<GridMetrics>({ hourHeight, columnWidth: 0 });
   gridMetrics.current.hourHeight = hourHeight;
 
+  // PointerSensor handles both mouse and touch (unified pointer events).
+  // TouchSensor is added as a fallback for older touch browsers; it also
+  // improves reliability on Android Chrome.
+  // Activation distance of 6px lets clicks fire without starting a drag.
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      // Require a 6 px move before drag starts, so clicks still fire.
-      activationConstraint: { distance: 6 },
+      activationConstraint: {
+        // Require at least 6 px of movement before a drag starts so that
+        // taps on events still fire the click → open-modal handler.
+        distance: 6,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        // On touch, wait 150 ms OR move 8 px before starting drag.
+        // This gives time for the tap intent to resolve, reducing
+        // accidental drag-starts during scrolling.
+        delay: 150,
+        tolerance: 8,
+      },
     }),
   );
 
@@ -231,9 +271,12 @@ export const Scheduler: React.FC<SchedulerProps> = ({
         onDragEnd={handleDragEnd}
       >
         {/* ── Navigation header ──────────────────────────────────── */}
+        {/* Header uses CSS media queries for responsive layout;
+            isMobile is passed so it can abbreviate labels if needed. */}
         <Header
           view={view}
           date={date}
+          isMobile={isMobile}
           onViewChange={handleViewChange}
           onDateChange={handleDateChange}
         />
@@ -256,8 +299,9 @@ export const Scheduler: React.FC<SchedulerProps> = ({
             <div
               className="rss-drag-overlay"
               style={{
-                // Give the overlay a fixed height so it looks natural
-                height: hourHeight * 1.5,
+                // Give the overlay a fixed height so it looks natural.
+                // On mobile use a slightly shorter overlay to stay clear of fingers.
+                height: isMobile ? hourHeight * 1.2 : hourHeight * 1.5,
                 width: view === 'day' ? '100%' : 120,
               }}
             >

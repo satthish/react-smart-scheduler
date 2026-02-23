@@ -29,17 +29,30 @@ interface TimeGridProps {
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 const WEEKDAY_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+// Discard unused HOURS constant (visibleHours computed from props below)
+void HOURS;
 
 /**
  * TimeGrid is the shared backbone for both DayView and WeekView.
  *
  * Layout structure:
  *   ┌──────────┬─────────────────────────────┐
- *   │  gutter  │  day column headers         │
+ *   │  gutter  │  day column headers         │  ← sticky top (scrolls together)
  *   ├──────────┼─────────────────────────────┤
- *   │  time    │  scrollable columns         │
+ *   │  time    │  event columns              │
  *   │  labels  │  (hour lines + events)      │
  *   └──────────┴─────────────────────────────┘
+ *
+ * Responsive / horizontal scroll approach:
+ *   The day-header row is placed INSIDE the single scroll container so that
+ *   it scrolls horizontally together with the time columns. It is kept
+ *   visible on vertical scroll via `position: sticky; top: 0`.
+ *   The time-label gutter (left column) and the allday-gutter corner are
+ *   kept visible on horizontal scroll via `position: sticky; left: 0`.
+ *   On screens < 640 px the scroll container switches to `overflow-x: auto`,
+ *   and each day column gets a minimum width (see scheduler.css) so that
+ *   week view becomes horizontally scrollable rather than squishing 7 columns
+ *   into a narrow viewport.
  *
  * Events are absolutely positioned within each column using percentages
  * computed by positionEvents(). The grid height is hourHeight × visible hours.
@@ -103,36 +116,54 @@ export const TimeGrid: React.FC<TimeGridProps> = ({
 
   return (
     <div className="rss-timegrid">
-      {/* ── Day-of-week header row ──────────────────────────────── */}
-      <div className="rss-timegrid-allday" aria-hidden="true">
-        <div className="rss-timegrid-allday-gutter" />
-        <div className="rss-day-headers">
-          {columns.map((col) => {
-            const today = isToday(col.date);
-            return (
-              <div key={col.key} className="rss-day-header">
-                <span className="rss-day-header-weekday">
-                  {WEEKDAY_SHORT[col.date.getDay()]}
-                </span>
-                <span
-                  className={`rss-day-header-num ${today ? 'rss-day-header-num--today' : ''}`}
-                >
-                  {format(col.date, 'd')}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ── Scrollable body ─────────────────────────────────────── */}
+      {/*
+        Single unified scroll container.
+        - overflow-y: auto → vertical scroll for the time grid.
+        - overflow-x: hidden by default; switched to `auto` on mobile via CSS.
+        Both the day-header row and the time columns live inside here so they
+        scroll together horizontally. Sticky positioning keeps the header row
+        at the top on vertical scroll and the gutter at the left on horizontal.
+      */}
       <div className="rss-timegrid-scroll">
+
+        {/* ── Day-of-week header row ──────────────────────────────── */}
+        {/*
+          position: sticky; top: 0  → sticks to top while scrolling down.
+          The allday-gutter corner inside it uses sticky; left: 0  so it
+          stays visible when scrolling right in week view on mobile.
+        */}
+        <div className="rss-timegrid-allday" aria-hidden="true">
+          {/* Top-left corner spacer — matches the time gutter width */}
+          <div className="rss-timegrid-allday-gutter" />
+          <div className="rss-day-headers">
+            {columns.map((col) => {
+              const today = isToday(col.date);
+              return (
+                <div key={col.key} className="rss-day-header">
+                  <span className="rss-day-header-weekday">
+                    {WEEKDAY_SHORT[col.date.getDay()]}
+                  </span>
+                  <span
+                    className={`rss-day-header-num ${today ? 'rss-day-header-num--today' : ''}`}
+                  >
+                    {format(col.date, 'd')}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ── Scrollable body ─────────────────────────────────────── */}
         <div
           className="rss-timegrid-body"
           ref={setDropRef}
           style={{ height: totalHeight }}
         >
-          {/* Time gutter */}
+          {/*
+            Time-label gutter — position: sticky; left: 0 so it stays
+            visible when the user scrolls the week grid horizontally on mobile.
+          */}
           <div className="rss-time-gutter" aria-hidden="true">
             {visibleHours.map((hour) => (
               <div
