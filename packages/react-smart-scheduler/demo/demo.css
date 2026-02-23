@@ -262,6 +262,49 @@ body {
   border-bottom: 1px solid #0f172a;
 }
 
+/* ── Theme switcher ────────────────────────────────────────── */
+.demo-theme-group {
+  display: flex;
+  gap: 4px;
+}
+
+.demo-theme-btn {
+  flex: 1;
+  padding: 5px 6px;
+  border-radius: 5px;
+  border: 1px solid #1e293b;
+  background: #0f172a;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.demo-theme-btn:hover {
+  background: #1e293b;
+  color: #cbd5e1;
+  border-color: #334155;
+}
+
+.demo-theme-btn--active {
+  background: #6366f1;
+  border-color: #6366f1;
+  color: #fff;
+}
+
+.demo-theme-btn--active:hover {
+  background: #4f46e5;
+  border-color: #4f46e5;
+}
+
+.demo-theme-desc {
+  font-size: 10px;
+  color: #475569;
+  margin-top: 2px;
+}
+
 /* ── Code snippet ──────────────────────────────────────────── */
 .demo-code {
   background: #020617;

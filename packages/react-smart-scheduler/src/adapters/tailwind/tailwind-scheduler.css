@@ -1,0 +1,50 @@
+/* ============================================================
+   react-smart-scheduler — Tailwind-inspired theme
+   Applies indigo accent, rounder corners, and Inter font.
+   Add class "rss-theme-tw" via TailwindScheduler or className.
+   ============================================================ */
+
+.rss-root.rss-theme-tw {
+  --rss-primary:       #6366f1; /* indigo-500 */
+  --rss-primary-light: #eef2ff; /* indigo-50  */
+  --rss-today-bg:      #eef2ff;
+  --rss-radius:        8px;
+  --rss-event-radius:  6px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.rss-root.rss-theme-tw .rss-btn--primary {
+  background: #6366f1;
+  border-color: #6366f1;
+}
+
+.rss-root.rss-theme-tw .rss-btn--primary:hover {
+  background: #4f46e5;
+  border-color: #4f46e5;
+}
+
+.rss-root.rss-theme-tw .rss-view-btn--active {
+  background: #6366f1;
+}
+
+.rss-root.rss-theme-tw .rss-view-btn--active:hover {
+  background: #4f46e5;
+}
+
+.rss-root.rss-theme-tw .rss-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgb(99 102 241 / 0.15);
+}
+
+.rss-root.rss-theme-tw .rss-hour-cell:hover {
+  background: rgb(99 102 241 / 0.04);
+}
+
+.rss-root.rss-theme-tw .rss-day-header-num--today,
+.rss-root.rss-theme-tw .rss-month-day-num--today {
+  background: #6366f1;
+}
+
+.rss-root.rss-theme-tw .rss-modal {
+  border-radius: 12px;
+}
