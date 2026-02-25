@@ -500,3 +500,299 @@ body {
   .sb-sidebar  { width: 200px; min-width: 200px; }
   .sb-doc-body { padding: 20px 24px 40px; }
 }
+
+/* ── Ad banner (Monetag) ───────────────────────────────────── */
+.sb-ad-banner {
+  min-height: 50px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: min-height 0.2s;
+}
+/* Collapse when Monetag injects nothing */
+.sb-ad-banner:empty { min-height: 0; border-bottom: none; }
+
+/* ── Story header — flat (no bottom border) ────────────────── */
+.sb-story-header--flat { border-bottom: none; }
+
+/* ── Main Canvas / Docs tab switcher ───────────────────────── */
+.sb-main-tabs {
+  display: flex;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  align-self: center;
+}
+.sb-main-tab {
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  background: #fff;
+  border-right: 1px solid #e5e7eb;
+  white-space: nowrap;
+  transition: background 0.12s, color 0.12s;
+}
+.sb-main-tab:last-child    { border-right: none; }
+.sb-main-tab:hover         { background: #f9fafb; color: #374151; }
+.sb-main-tab--on           { background: #6366f1; color: #fff; border-color: #6366f1; }
+.sb-main-tab--on:hover     { background: #4f46e5; }
+
+/* ── Canvas background variants ────────────────────────────── */
+.sb-canvas--light { background: #ffffff; }
+.sb-canvas--gray  { background: #f1f5f9; }
+.sb-canvas--dark  { background: #1e293b; }
+
+/* ── Canvas frame (viewport simulation) ────────────────────── */
+.sb-canvas-frame {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+  transition: max-width 0.25s ease;
+}
+
+/* ── Canvas toolbar ─────────────────────────────────────────── */
+.sb-canvas-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 14px;
+  height: 40px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+.sb-ct-group  { display: flex; align-items: center; gap: 6px; }
+.sb-ct-label  {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+.sb-ct-btns  { display: flex; gap: 2px; }
+.sb-ct-btn   {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 26px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #6b7280;
+  border: 1px solid transparent;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.sb-ct-btn:hover  { background: #f3f4f6; color: #374151; }
+.sb-ct-btn--on    { background: #eff6ff; color: #3b82f6; border-color: #bfdbfe; }
+.sb-ct-divider    { width: 1px; height: 20px; background: #e5e7eb; margin: 0 6px; flex-shrink: 0; }
+.sb-ct-hint       { font-size: 10px; color: #9ca3af; white-space: nowrap; margin-left: 4px; }
+
+/* ── Addons panel ───────────────────────────────────────────── */
+.sb-addons {
+  flex-shrink: 0;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  min-height: 175px;
+  max-height: 250px;
+  overflow: hidden;
+}
+.sb-addons-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  height: 36px;
+  border-bottom: 1px solid #f3f4f6;
+  background: #f9fafb;
+  flex-shrink: 0;
+}
+.sb-addon-tabs { display: flex; gap: 0; }
+.sb-addon-tab  {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 2px solid transparent;
+  transition: color 0.12s, border-color 0.12s;
+  white-space: nowrap;
+}
+.sb-addon-tab:hover  { color: #374151; }
+.sb-addon-tab--on    { color: #6366f1; border-bottom-color: #6366f1; }
+.sb-addons-body      { flex: 1; overflow-y: auto; background: #fff; }
+
+/* ── Controls panel ─────────────────────────────────────────── */
+.sb-controls { padding: 0; }
+.sb-controls-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+.sb-controls-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #9ca3af;
+}
+.sb-controls-reset {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6366f1;
+  padding: 2px 8px;
+  border: 1px solid #e0e7ff;
+  border-radius: 4px;
+  background: #eef2ff;
+  transition: background 0.12s;
+}
+.sb-controls-reset:hover { background: #e0e7ff; }
+.sb-controls-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.sb-controls-table th {
+  text-align: left;
+  padding: 5px 16px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9ca3af;
+  background: #f9fafb;
+  border-bottom: 1px solid #f3f4f6;
+}
+.sb-controls-table td {
+  padding: 7px 16px;
+  border-bottom: 1px solid #f9fafb;
+  vertical-align: middle;
+  color: #374151;
+}
+.sb-controls-table tr:last-child td { border-bottom: none; }
+.sb-controls-table code {
+  font-family: 'SF Mono','Fira Code','Consolas',monospace;
+  font-size: 11px;
+  color: #4f46e5;
+  background: #f3f4ff;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+.sb-range {
+  width: 100%;
+  max-width: 160px;
+  accent-color: #6366f1;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.sb-select {
+  padding: 3px 6px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #374151;
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+}
+.sb-select:focus { border-color: #6366f1; box-shadow: 0 0 0 2px #eef2ff; }
+.sb-val     { font-weight: 600; color: #111827; font-size: 12px; white-space: nowrap; }
+.sb-default { color: #9ca3af; font-size: 12px; white-space: nowrap; }
+
+/* ── Docs tab body ──────────────────────────────────────────── */
+.sb-docs-tab-body {
+  flex: 1;
+  overflow-y: auto;
+  background: #fff;
+}
+
+/* ── Sidebar search ─────────────────────────────────────────── */
+.sb-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 10px;
+  padding: 5px 8px;
+  background: #1e2028;
+  border: 1px solid #2d3748;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.sb-search-icon { font-size: 11px; flex-shrink: 0; opacity: 0.5; }
+.sb-search {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 12px;
+  color: #e2e8f0;
+  min-width: 0;
+}
+.sb-search::placeholder { color: #475569; }
+.sb-search-empty {
+  padding: 12px 14px;
+  font-size: 12px;
+  color: #475569;
+  font-style: italic;
+}
+
+/* ── Nav group header (new structure with icon) ─────────────── */
+.sb-nav-group-hdr {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px 3px;
+}
+/* Reset padding on label when inside hdr (padding now on parent) */
+.sb-nav-group-hdr .sb-nav-group-label { padding: 0; }
+.sb-nav-group-icon      { font-size: 12px; flex-shrink: 0; opacity: 0.6; }
+.sb-nav-group-icon-only {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  font-size: 14px;
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* ── Nav story dots ─────────────────────────────────────────── */
+.sb-nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2d3748;
+  flex-shrink: 0;
+  transition: background 0.12s, transform 0.12s;
+}
+.sb-nav-dot--active { background: #6366f1; transform: scale(1.2); }
+.sb-nav-item:hover .sb-nav-dot:not(.sb-nav-dot--active) { background: #475569; }
+
+/* ── Addons panel code view ─────────────────────────────────── */
+.sb-addons-body .sb-code {
+  max-height: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+}
+
+/* ── Responsive extras ──────────────────────────────────────── */
+@media (max-width: 767px) {
+  .sb-addons           { display: none; }        /* save space on phone */
+  .sb-canvas-toolbar   { padding: 0 8px; gap: 2px; }
+  .sb-ct-label         { display: none; }        /* labels too wide on phone */
+  .sb-ad-banner        { min-height: 0; border-bottom: none; } /* ads handled by Monetag */
+  .sb-main-tabs        { display: none; }        /* too wide; canvas is default on mobile */
+}
