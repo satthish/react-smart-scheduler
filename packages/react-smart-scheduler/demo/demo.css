@@ -163,7 +163,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;       /* page-level scroll lives here */
   min-width: 0;
 }
 
@@ -178,6 +178,9 @@ body {
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
   flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
 
 .sb-breadcrumb { display: flex; align-items: center; gap: 5px; font-size: 12px; overflow: hidden; }
@@ -207,22 +210,17 @@ body {
 
 /* ── Main ──────────────────────────────────────────────────── */
 .sb-main {
-  flex: 1;
-  overflow: hidden;
+  flex: none;             /* size to content, not viewport */
   display: flex;
   flex-direction: column;
-  min-height: 0;
 }
 
 /* ── Story pages ───────────────────────────────────────────── */
 .sb-page {
-  flex: 1;
   display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  min-height: 0;
+  flex-direction: column;  /* scrolling is handled by .sb-right */
 }
-.sb-page--docs { overflow-y: auto; }
+.sb-page--docs { /* inherits scroll from .sb-right */ }
 
 /* Story header */
 .sb-story-header {
@@ -258,19 +256,18 @@ body {
 
 /* ── Canvas (live preview) ─────────────────────────────────── */
 .sb-canvas {
-  flex: 1;
   padding: 16px;
   background: #f1f5f9;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  /* tall enough for the scheduler to show all hour rows */
+  min-height: 600px;
 }
-/* Let the scheduler fill all available canvas space */
+/* Scheduler sizes to its own content height (hourHeight × hours) */
 .sb-canvas .rss-root {
-  flex: 1;
-  min-height: 0;
-  height: 100%;
+  height: auto;
+  min-height: 560px;
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.08), 0 4px 20px rgb(0 0 0 / 0.06);
 }
 
@@ -603,8 +600,8 @@ body {
   border-top: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
-  min-height: 175px;
-  max-height: 250px;
+  min-height: 180px;
+  /* no max-height — page scroll handles overflow */
   overflow: hidden;
 }
 .sb-addons-bar {
